@@ -157,7 +157,7 @@ class PokemonDetailView: UIView {
     }
     
     func configure(with pokemonDetail: PokemonDetail, isFavorited: Bool) {
-        nameLabel.text = pokemonDetail.name
+        nameLabel.text = pokemonDetail.name.capitalized
         imageView.image = UIImage(named: pokemonDetail.imageUrl)
         
         for type in pokemonDetail.types {
