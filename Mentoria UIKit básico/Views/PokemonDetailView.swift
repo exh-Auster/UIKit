@@ -54,15 +54,14 @@ class PokemonDetailView: UIView {
         return label
     }()
     
-    private let typeLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        label.textAlignment = .center
-        label.textColor = .white
-        label.layer.cornerRadius = 8
-        label.clipsToBounds = true
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private lazy var typesStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .center
+        stack.distribution = .fillProportionally
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
     private let heightLabel: UILabel = {
@@ -94,7 +93,7 @@ class PokemonDetailView: UIView {
         let stack = UIStackView(arrangedSubviews: [
             imageView,
             nameLabel,
-            typeLabel,
+            typesStackView,
             infoStackView,
             favoriteButton
         ])
@@ -132,20 +131,44 @@ class PokemonDetailView: UIView {
             imageView.heightAnchor.constraint(equalToConstant: 200),
             imageView.widthAnchor.constraint(equalToConstant: 200),
             
-            typeLabel.heightAnchor.constraint(equalToConstant: 30),
-            typeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 120)
+            typesStackView.heightAnchor.constraint(equalToConstant: 30)
         ])
+    }
+    
+    private func createTypeLabel(for type: PokemonType) -> UILabel {
+        let label = UILabel()
+        label.text = type.getTitle()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.backgroundColor = type.getColor()
+        label.layer.cornerRadius = 8
+        label.clipsToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        label.layoutMargins = UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 12)
+        
+        NSLayoutConstraint.activate([
+            label.widthAnchor.constraint(greaterThanOrEqualToConstant: 80),
+            label.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        return label
     }
     
     func configure(with pokemonDetail: PokemonDetail, isFavorited: Bool) {
         nameLabel.text = pokemonDetail.name
         imageView.image = UIImage(named: pokemonDetail.imageUrl)
-        typeLabel.text = pokemonDetail.types.map { $0.getTitle() }.joined(separator: ", ")
+        
+        for type in pokemonDetail.types {
+            let typeLabel = createTypeLabel(for: type)
+            typesStackView.addArrangedSubview(typeLabel)
+        }
+        
         heightLabel.text = "Height: \(pokemonDetail.height)m"
         weightLabel.text = "Weight: \(pokemonDetail.weight)kg"
         
         if let primaryType = pokemonDetail.types.first {
-            typeLabel.backgroundColor = primaryType.getColor()
             backgroundColor = primaryType.getColor()
         }
         
