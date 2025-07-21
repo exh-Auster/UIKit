@@ -156,6 +156,31 @@ class PokemonDetailView: UIView {
         return label
     }
     
+    private func applyBackground(with types: [PokemonType]) {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.bounds
+        
+        var colors: [CGColor] = []
+        if types.isEmpty {
+            colors = [UIColor.systemBackground.cgColor, UIColor.systemGray6.cgColor]
+        } else if types.count == 1 {
+            let typeColor = types[0].getColor()
+            colors = [
+                typeColor.cgColor,
+                typeColor.withAlphaComponent(0.7).cgColor
+            ]
+        } else {
+            colors = types.prefix(2).map { $0.getColor().cgColor }
+        }
+        
+        gradientLayer.colors = colors
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.0, y: 1.0)
+        
+        self.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
     func configure(with pokemonDetail: PokemonDetail, isFavorited: Bool) {
         nameLabel.text = pokemonDetail.name.capitalized
         imageView.image = UIImage(named: pokemonDetail.imageUrl)
@@ -173,6 +198,8 @@ class PokemonDetailView: UIView {
         }
         
         imageView.loadImage(urlString: pokemonDetail.imageUrl)
+        
+        applyBackground(with: pokemonDetail.types)
         
         configureButton(isFavorited: isFavorited)
     }
