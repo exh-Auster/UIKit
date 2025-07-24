@@ -15,12 +15,18 @@ class PokemonDetailViewController: UIViewController, PokemonDetailViewModelDeleg
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupNavigationBar() {
+        let favoriteBarButton = UIBarButtonItem(customView: pokemonDetailView.favoriteButton)
+        navigationItem.rightBarButtonItem = favoriteBarButton
+    }
+    
     override func loadView() {
         view = pokemonDetailView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         viewModel.fetchPokemonDetail()
     }
     

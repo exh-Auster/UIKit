@@ -7,7 +7,7 @@ protocol PokemonDetailViewDelegate: AnyObject {
 class PokemonDetailView: UIView {
     weak var delegate: PokemonDetailViewDelegate?
     
-    private lazy var favoriteButton: UIButton = {
+    lazy var favoriteButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "heart"), for: .normal)
         button.tintColor = .systemRed
